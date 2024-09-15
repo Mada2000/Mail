@@ -16,10 +16,43 @@ function compose_email() {
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+
+
+  // When the form is submitted
+  document.querySelector('#compose-form').onsubmit = () => {
+
+    // Collect the data of the form
+    const form_recipient = document.querySelector('#compose-recipients').value;
+    const form_subject = document.querySelector('#compose-subject').value;
+    const form_body = document.querySelector('#compose-body').value;
+    
+    // Post the mail using the API
+    fetch('/emails', {
+      method: 'POST',
+      body: JSON.stringify({
+          recipients: form_recipient,
+          subject: form_subject,
+          body: form_body
+      })
+    })
+    .then(response => response.json())
+    .then(result => {
+        // Print result
+        console.log(result);
+    });
+
+    // Clear out composition fields
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
+
+    return false;
+  }
+
+    // Clear out composition fields
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
 }
 
 function load_mailbox(mailbox) {
