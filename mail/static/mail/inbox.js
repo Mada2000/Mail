@@ -1,21 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  function onbuttonclicked(email_id){
-    fetch(`/emails/${email_id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-          archived: true
-      })
-    })
-  }
-  function onbuttonclicked_unarchive(email_id){
-    fetch(`/emails/${email_id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-          archived: false
-      })
-    })
-  }
   
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
@@ -33,8 +17,6 @@ function compose_email() {
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
   document.querySelector('#email-view').innerHTML = '';
-
-
 
 
   // When the form is submitted
@@ -72,6 +54,7 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
+  
 }
 
 function load_mailbox(mailbox) {
@@ -89,13 +72,17 @@ function load_mailbox(mailbox) {
       .then(response => response.json())
       .then(emails => {
 
-        // hide the email
-        document.querySelector('#email-view').innerHTML = '';
+        // assign the email html to empty string
+        document.querySelector('#email-view').style.display = 'none';
 
         // Iterate on every email and add event listener to it    
         emails.forEach(elemento => {
           const element = document.createElement('div');
+          element.setAttribute("id", "email");
           element.innerHTML = `${elemento.sender}  ${elemento.subject}  ${elemento.body}`;
+          if(element.read === true){
+            document.querySelector('#email').style.display = 'none';
+          }
           element.addEventListener('click', function () {
             fetch(`/emails/${elemento.id}`)
               .then(response => response.json())
@@ -118,10 +105,13 @@ function load_mailbox(mailbox) {
                 const email_timestamp = document.createElement('div');
                 const email_body = document.createElement('div');
                 var button1 = document.createElement("button");
-                var t = document.createTextNode("Click me");
-                button1.appendChild(t);
+                var t1 = document.createTextNode("achieve");
+                var button2 = document.createElement("button");
+                var t2 = document.createTextNode("reply");
+                button1.appendChild(t1);
+                button2.appendChild(t2);
 
-
+                // fill the divs with data and append them to the parent div 
                 email_from.innerHTML = `From: ${email.sender}`;
                 email_to.innerHTML = `To: ${email.recipients}`;
                 email_subject.innerHTML = `Subject: ${email.subject}`;
@@ -134,16 +124,45 @@ function load_mailbox(mailbox) {
                 document.querySelector('#email-view').append(email_timestamp);
                 document.querySelector('#email-view').append(email_body);
                 document.querySelector('#email-view').append(button1);
+                document.querySelector('#email-view').append(button2);
                 
+                // when the button is clicked it puts the email in the achieved section
                 button1.onclick = function(){
                   fetch(`/emails/${email.id}`, {
                     method: 'PUT',
                     body: JSON.stringify({
                         archived: true
                     })
+                    
                   })
-                  load_mailbox("inbox")
+                  // only when the fetch call completes execute the function to eliminate the the problem of not updating the inbox 
+                  .then( response => {
+                    load_mailbox('inbox')
+                  })
                 }
+
+
+                // call the compose email function and fill the inputs fields with the sent email data
+                button2.onclick = function(){
+                  compose_email()
+                  // set a variable to the first 3 characters in the subject string 
+                  let email_subject = email.subject;
+                  let first_three = email_subject.substring(0, 3);
+                  
+                  // If first three char's aren't Re: the add it to the beggining of the subject 
+                  if(first_three === 'Re:'){
+                    document.querySelector('#compose-subject').value = email.subject;
+                  }else{
+                    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+                  }
+                  
+                  // fill the body and the recipint with the email sender
+                  document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+                  document.querySelector('#compose-recipients').value = email.sender;
+                  
+
+                }
+
               });
           });
           document.querySelector('#emails-view').append(element);
@@ -155,7 +174,7 @@ function load_mailbox(mailbox) {
     fetch('/emails/archive')
       .then(response => response.json())
       .then(emails => {
-        document.querySelector('#email-view').innerHTML = '';
+        document.querySelector('#email-view').style.display = 'none';
 
         // Iterate on every email and add event listener to it    
         emails.forEach(elemento => {
@@ -183,8 +202,11 @@ function load_mailbox(mailbox) {
                 const email_timestamp = document.createElement('div');
                 const email_body = document.createElement('div');
                 var button1 = document.createElement("button");
-                var t = document.createTextNode("Unarchive");
-                button1.appendChild(t);
+                var t1 = document.createTextNode("Unarchive");
+                var button2 = document.createElement("button");
+                var t2 = document.createTextNode("reply");
+                button1.appendChild(t1);
+                button2.appendChild(t2);
 
 
                 email_from.innerHTML = `From: ${email.sender}`;
@@ -205,14 +227,41 @@ function load_mailbox(mailbox) {
                 document.querySelector('#email-view').append(email_timestamp);
                 document.querySelector('#email-view').append(email_body);
                 document.querySelector('#email-view').append(button1);
+                document.querySelector('#email-view').append(button2);
+
+
                 button1.onclick = function(){
                   fetch(`/emails/${email.id}`, {
                     method: 'PUT',
                     body: JSON.stringify({
                         archived: false
                     })
+                    
                   })
-                  load_mailbox("inbox")
+                  .then( response => {
+                    load_mailbox('inbox')
+                  })
+                }
+
+                // call the compose email function and fill the inputs fields with the sent email data
+                button2.onclick = function(){
+                  compose_email()
+                  // set a variable to the first 3 characters in the subject string 
+                  let email_subject = email.subject;
+                  let first_three = email_subject.substring(0, 3);
+                  
+                  // If first three char's aren't Re: the add it to the beggining of the subject 
+                  if(first_three === 'Re:'){
+                    document.querySelector('#compose-subject').value = email.subject;
+                  }else{
+                    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+                  }
+                  
+                  // fill the body and the recipint with the email sender
+                  document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+                  document.querySelector('#compose-recipients').value = email.sender;
+                  
+
                 }
               });
           });
