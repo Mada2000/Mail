@@ -294,6 +294,8 @@ function load_mailbox(mailbox) {
     fetch('/emails/sent')
       .then(response => response.json())
       .then(emails => {
+
+        // clear the div
         document.querySelector('#email-view').innerHTML = '';
 
         // Iterate on every email and add event listener to it    
@@ -317,18 +319,20 @@ function load_mailbox(mailbox) {
                 const email_to = document.createElement('div');
                 const email_subject = document.createElement('div');
                 const email_timestamp = document.createElement('div');
+                const break_line = document.createElement('hr');
                 const email_body = document.createElement('div');
 
-                email_from.innerHTML = `From: ${email.sender}`;
-                email_to.innerHTML = `To: ${email.recipients}`;
-                email_subject.innerHTML = `Subject: ${email.subject}`;
-                email_timestamp.innerHTML = `Timestamp: ${email.timestamp}`;
-                email_body.innerHTML = email.body;
+                email_from.innerHTML = `<strong>From: </strong>${email.sender}`;
+                email_to.innerHTML = `<strong>To: </strong>${email.recipients}`;
+                email_subject.innerHTML = `<strong>Subject</strong>: ${email.subject}`;
+                email_timestamp.innerHTML = `<div id='email_timestamp'><strong>Timestamp: </strong>${email.timestamp}</div>`;
+                email_body.innerHTML = `<div id='email_body'>${email.body}</div>`;
 
                 document.querySelector('#email-view').append(email_from);
                 document.querySelector('#email-view').append(email_to);
                 document.querySelector('#email-view').append(email_subject);
                 document.querySelector('#email-view').append(email_timestamp);
+                document.querySelector('#email-view').append(break_line);
                 document.querySelector('#email-view').append(email_body);
 
               });
