@@ -77,12 +77,15 @@ function load_mailbox(mailbox) {
 
         // Iterate on every email and add event listener to it    
         emails.forEach(elemento => {
-          const element = document.createElement('div');
-          element.setAttribute("id", "email");
-          element.innerHTML = `${elemento.sender}  ${elemento.subject}  ${elemento.body}`;
-          if(element.read === true){
-            document.querySelector('#email').style.display = 'none';
+          let element = document.createElement('div');
+          element.classList.add("d-flex");
+          if(elemento.read === true){
+            element.id = 'email_row_read';
+          }else{
+            element.id = 'email_row';
           }
+          
+          element.innerHTML = `<strong>${elemento.sender}</strong> <div id='email_row_subject'>${elemento.subject}</div>  <div id="email_row_timestamp">${elemento.timestamp}</div>`;
           element.addEventListener('click', function () {
             fetch(`/emails/${elemento.id}`)
               .then(response => response.json())
@@ -101,30 +104,38 @@ function load_mailbox(mailbox) {
                 // create new div's for the email 
                 const email_from = document.createElement('div');
                 const email_to = document.createElement('div');
+                const break_line = document.createElement('hr');
                 const email_subject = document.createElement('div');
                 const email_timestamp = document.createElement('div');
                 const email_body = document.createElement('div');
                 var button1 = document.createElement("button");
-                var t1 = document.createTextNode("achieve");
-                var button2 = document.createElement("button");
-                var t2 = document.createTextNode("reply");
+                var t1 = document.createTextNode("Achieve");
+                button1.classList.add("btn");
+                button1.classList.add("btn-sm");
+                button1.classList.add("btn-outline-primary");
+                var button2 = document.createElement("button"); 
+                button2.classList.add("btn");
+                button2.classList.add("btn-sm");
+                button2.classList.add("btn-outline-primary");
+                var t2 = document.createTextNode("Reply");
                 button1.appendChild(t1);
                 button2.appendChild(t2);
 
                 // fill the divs with data and append them to the parent div 
-                email_from.innerHTML = `From: ${email.sender}`;
-                email_to.innerHTML = `To: ${email.recipients}`;
-                email_subject.innerHTML = `Subject: ${email.subject}`;
-                email_timestamp.innerHTML = `Timestamp: ${email.timestamp}`;
-                email_body.innerHTML = email.body;
+                email_from.innerHTML = `<strong>From: </strong>${email.sender}`;
+                email_to.innerHTML = `<strong>To: </strong>${email.recipients}`;
+                email_subject.innerHTML = `<strong>Subject</strong>: ${email.subject}`;
+                email_timestamp.innerHTML = `<div id='email_timestamp'><strong>Timestamp: </strong>${email.timestamp}</div>`;
+                email_body.innerHTML = `<div id='email_body'>${email.body}</div>`;
 
                 document.querySelector('#email-view').append(email_from);
                 document.querySelector('#email-view').append(email_to);
                 document.querySelector('#email-view').append(email_subject);
                 document.querySelector('#email-view').append(email_timestamp);
-                document.querySelector('#email-view').append(email_body);
                 document.querySelector('#email-view').append(button1);
                 document.querySelector('#email-view').append(button2);
+                document.querySelector('#email-view').append(break_line);
+                document.querySelector('#email-view').append(email_body);
                 
                 // when the button is clicked it puts the email in the achieved section
                 button1.onclick = function(){
@@ -178,8 +189,14 @@ function load_mailbox(mailbox) {
 
         // Iterate on every email and add event listener to it    
         emails.forEach(elemento => {
-          const element = document.createElement('div');
-          element.innerHTML = `${elemento.sender}  ${elemento.subject}  ${elemento.body}`;
+          let element = document.createElement('div');
+          element.classList.add("d-flex");
+          if(elemento.read === true){
+            element.id = 'email_row_read';
+          }else{
+            element.id = 'email_row';
+          }
+          element.innerHTML = `<strong>${elemento.sender}</strong> <div id='email_row_subject'>${elemento.subject}</div>  <div id="email_row_timestamp">${elemento.timestamp}</div>`;
           element.addEventListener('click', function () {
             fetch(`/emails/${elemento.id}`)
               .then(response => response.json())
@@ -197,37 +214,40 @@ function load_mailbox(mailbox) {
 
                 // create new div's for the email 
                 const email_from = document.createElement('div');
+                const break_line = document.createElement('hr');
                 const email_to = document.createElement('div');
                 const email_subject = document.createElement('div');
                 const email_timestamp = document.createElement('div');
                 const email_body = document.createElement('div');
                 var button1 = document.createElement("button");
-                var t1 = document.createTextNode("Unarchive");
-                var button2 = document.createElement("button");
-                var t2 = document.createTextNode("reply");
+                var t1 = document.createTextNode("Unachieve");
+                button1.classList.add("btn");
+                button1.classList.add("btn-sm");
+                button1.classList.add("btn-outline-primary");
+                var button2 = document.createElement("button"); 
+                button2.classList.add("btn");
+                button2.classList.add("btn-sm");
+                button2.classList.add("btn-outline-primary");
+                var t2 = document.createTextNode("Reply");
                 button1.appendChild(t1);
                 button2.appendChild(t2);
 
 
-                email_from.innerHTML = `From: ${email.sender}`;
-                email_to.innerHTML = `To: ${email.recipients}`;
-                email_subject.innerHTML = `Subject: ${email.subject}`;
-                email_timestamp.innerHTML = `Timestamp: ${email.timestamp}`;
-                email_body.innerHTML = email.body;
-
-                email_from.innerHTML = `From: ${email.sender}`;
-                email_to.innerHTML = `To: ${email.recipients}`;
-                email_subject.innerHTML = `Subject: ${email.subject}`;
-                email_timestamp.innerHTML = `Timestamp: ${email.timestamp}`;
-                email_body.innerHTML = email.body;
+                email_from.innerHTML = `<strong>From: </strong>${email.sender}`;
+                email_to.innerHTML = `<strong>To: </strong>${email.recipients}`;
+                email_subject.innerHTML = `<strong>Subject</strong>: ${email.subject}`;
+                email_timestamp.innerHTML = `<div id='email_timestamp'><strong>Timestamp: </strong>${email.timestamp}</div>`;
+                email_body.innerHTML = `<div id='email_body'>${email.body}</div>`;
 
                 document.querySelector('#email-view').append(email_from);
                 document.querySelector('#email-view').append(email_to);
                 document.querySelector('#email-view').append(email_subject);
                 document.querySelector('#email-view').append(email_timestamp);
-                document.querySelector('#email-view').append(email_body);
                 document.querySelector('#email-view').append(button1);
                 document.querySelector('#email-view').append(button2);
+                document.querySelector('#email-view').append(break_line);
+                document.querySelector('#email-view').append(email_body);
+                
 
 
                 button1.onclick = function(){
@@ -278,8 +298,10 @@ function load_mailbox(mailbox) {
 
         // Iterate on every email and add event listener to it    
         emails.forEach(elemento => {
-          const element = document.createElement('div');
-          element.innerHTML = `${elemento.sender}  ${elemento.subject}  ${elemento.body}`;
+          let element = document.createElement('div');
+          element.classList.add("d-flex");
+          element.id = 'email_row';
+          element.innerHTML = `<strong>${elemento.sender}</strong> <div id='email_row_subject'>${elemento.subject}</div>  <div id="email_row_timestamp">${elemento.timestamp}</div>`;
           element.addEventListener('click', function () {
             // get the email information with the api 
             fetch(`/emails/${elemento.id}`)

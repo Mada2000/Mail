@@ -1,3 +1,42 @@
 textarea {
     min-height: 400px;
 }
+
+#email_row{
+    border: 1px solid rgb(48, 46, 46);
+    border-radius: 10px;
+    margin-bottom: 4px;
+    padding: 5px;
+    display: inline-block;
+    transition: 0.5s;
+}
+#email_row_read{
+    border: 0.5px solid rgb(57, 55, 55);
+    border-radius: 10px;
+    background-color: rgb(233, 228, 228);
+    margin-bottom: 4px;
+    padding: 5px;
+    display: inline-block;
+    transition: 0.5s;
+}
+#email_row_read:hover{
+    background-color: white;
+}
+#email_row:hover{
+    background-color: rgb(233, 228, 228);
+}
+#email_row_subject{
+    margin-left: 20px;
+}
+
+#email_row_timestamp{
+    margin-left: auto;
+    display: inline;
+}
+#email_body{
+    margin-top: 15px;
+    margin-left: 5px;
+}
+#email_timestamp{
+    margin-bottom: 15px;
+}
